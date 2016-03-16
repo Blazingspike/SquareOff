@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Gamelogic.Grids;
 using DG.Tweening;
-using GoogleMobileAds.Api;
+using UnityEngine.Advertisements;
 
 public class MainController : MonoBehaviour {
   public static MainController Instance;
@@ -36,7 +36,7 @@ public class MainController : MonoBehaviour {
 
   // Use this for initialization
   void Start () {
-    //LevelUtils.setLevel (0);
+    LevelUtils.setLevel (0);
     resetLevel ();
   }
 	
@@ -110,21 +110,11 @@ public class MainController : MonoBehaviour {
   }
 
   public void nextLevelHandler() {
+    if (Advertisement.IsReady ()) {
+      Debug.Log (Advertisement.gameId);
+      Advertisement.Show ();
+    }
     resetLevel();
-//    // Initialize an InterstitialAd.
-//    InterstitialAd interstitial = new InterstitialAd ("testid");
-//    // Create an empty ad request.
-//    AdRequest request = new AdRequest.Builder ()
-//      .AddTestDevice(AdRequest.TestDeviceSimulator)
-//      .Build ();
-//    // Load the interstitial with the request.
-//    interstitial.LoadAd (request);
-//    interstitial.OnAdClosed += (object sender, System.EventArgs e) => {
-//      resetLevel();
-//    };
-//    if (interstitial.IsLoaded()) {
-//      interstitial.Show();
-//    }
   }
 
   public void backHome () {
@@ -325,22 +315,5 @@ public class MainController : MonoBehaviour {
         break;
       }
     }
-  }
-
-  private void RequestInterstitial () {
-    #if UNITY_ANDROID
-    string adUnitId = "INSERT_ANDROID_INTERSTITIAL_AD_UNIT_ID_HERE";
-    #elif UNITY_IPHONE
-    string adUnitId = "INSERT_IOS_INTERSTITIAL_AD_UNIT_ID_HERE";
-    #else
-    string adUnitId = "unexpected_platform";
-    #endif
-
-    // Initialize an InterstitialAd.
-    InterstitialAd interstitial = new InterstitialAd (adUnitId);
-    // Create an empty ad request.
-    AdRequest request = new AdRequest.Builder ().Build ();
-    // Load the interstitial with the request.
-    interstitial.LoadAd (request);
   }
 }
