@@ -36,7 +36,11 @@ public class Level {
 
 public static class LevelUtils {
   private static List<Level> levels;
-  private static string LevelString = "rubic2d-level";
+  public static string LevelString = "rubic2d-level";
+  public static string MaxLevelString = "rubic2d-max-level";
+  // 0 - easy; 1 - standard; 2 - hard; 3 - very hard; 4 - insane
+  public static string ModeString = "rubic2d-mode";
+  public static string MaxModeString = "rubic2d-max-mode";
 
   private static void initLevels() {
     if (levels != null) {
@@ -59,6 +63,7 @@ public static class LevelUtils {
     levels.Add (new Level (13, 6, 6, 1, 1, 0, 0));
     levels.Add (new Level (14, 6, 6, 1, 1, 1, 0));
     levels.Add (new Level (15, 6, 6, 1, 1, 1, 1));
+    levels.Add (new Level (15, 6, 6, 2, 1, 2, 1));
   }
 
   public static Level getLevel(int idx) {
@@ -87,5 +92,71 @@ public static class LevelUtils {
   public static bool isMaxLevel(Level level) {
     initLevels ();
     return level.id >= levels.Count;
+  }
+
+  public static int getCurrentMode() {
+    if (PlayerPrefs.HasKey (ModeString)) {
+      return PlayerPrefs.GetInt (ModeString);
+    }
+    return 0;
+  }
+
+  public static int getMaxMode() {
+    if (!PlayerPrefs.HasKey (MaxModeString)) {
+      // Default set to normal.
+      PlayerPrefs.SetInt (MaxModeString, 1);
+    }
+    return PlayerPrefs.GetInt (MaxModeString);
+  }
+
+  public static void setCurrentMode(int m) {
+    PlayerPrefs.SetInt (ModeString, m);
+  }
+
+  public static float getCurrentMoveTimer() {
+    int mode = getCurrentMode ();
+    return getMoveTimer (mode);
+  }
+
+  public static float getMoveTimer(int mode) {
+    switch (mode) {
+      case 0:
+        // Easy
+        return 10f;
+      case 1:
+        // Normal
+        return 7f;
+      case 2:
+        // Hard
+        return 5f;
+      case 3:
+        // Very hard
+        return 2f;
+      case 4:
+        // insane
+        return 1f;
+    }
+    return 30f;
+  }
+
+  public static string getModeString(int mode) {
+    switch (mode) {
+      case 0:
+        // Easy
+        return "Easy";
+      case 1:
+        // Normal
+        return "Normal";
+      case 2:
+        // Hard
+        return "Hard";
+      case 3:
+        // Very hard
+        return "Very Hard";
+      case 4:
+        // insane
+        return "Insane";
+    }
+    return "Mode";
   }
 }

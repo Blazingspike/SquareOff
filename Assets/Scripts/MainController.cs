@@ -18,9 +18,11 @@ public class MainController : MonoBehaviour {
   private Dictionary<RectPoint, Marker> markedPoints;
 
   float timer;
+  float moveTimer;
   int moveCount;
   bool isPlaying;
   int pickedColor;
+  int currentMode;
 
   void initSinglton () {
     if (Instance == null) {
@@ -36,7 +38,7 @@ public class MainController : MonoBehaviour {
 
   // Use this for initialization
   void Start () {
-    LevelUtils.setLevel (0);
+    //LevelUtils.setLevel (0);
     resetLevel ();
   }
 	
@@ -44,7 +46,11 @@ public class MainController : MonoBehaviour {
   void Update () {
     if (isPlaying && moveCount > 0) {
       timer += Time.deltaTime;
+      moveTimer -= Time.deltaTime;
       updateTimer ();
+    }
+    if (moveTimer < 0) {
+      handleLose ();
     }
     if (isPlaying && Input.GetMouseButtonDown (0)) {
       Vector3 worldPosition = GridBuilderUtils.ScreenToWorld (gameObject, Input.mousePosition);
@@ -59,7 +65,11 @@ public class MainController : MonoBehaviour {
   private void updateTimer () {
     Text t = GameObject.Find ("TimeCount").GetComponent<Text> ();
     if (t != null) {
-      t.text = " Timer: " + timer.ToString ("0.00");
+      if (moveTimer < 0) {
+        t.text = " Timer: 0.00";
+      } else {
+        t.text = " Timer: " + moveTimer.ToString ("0.00");
+      }
     }
   }
 
@@ -77,6 +87,8 @@ public class MainController : MonoBehaviour {
     currentLevel.text = "Level " + (level.id + 1).ToString ();
     moveCount = 0;
     timer = 0.00f;
+    currentMode = LevelUtils.getCurrentMode ();
+    moveTimer = LevelUtils.getMoveTimer (currentMode);
     isPlaying = false;
     clearMarker ();
     updateMoveCount ();
@@ -109,12 +121,12 @@ public class MainController : MonoBehaviour {
     //isPlaying = true;
   }
 
-  public void nextLevelHandler() {
+  public void nextLevelHandler () {
     if (Advertisement.IsReady ()) {
       Debug.Log (Advertisement.gameId);
       Advertisement.Show ();
     }
-    resetLevel();
+    resetLevel ();
   }
 
   public void backHome () {
@@ -174,21 +186,57 @@ public class MainController : MonoBehaviour {
       Utils.moveRight (p, grid, map, level.gridWidth, level.gridHeight);
     }
     addOneMove ();
+    moveTimer = LevelUtils.getMoveTimer (currentMode);
     // Check if winning.
     isPlaying = !isWinning ();
     if (!isPlaying) {
-      handleWinning ();
+      showWinAnimation ();
+    }
+  }
+
+  private void showWinAnimation () {
+    int count = (level.gridWidth - 2) * (level.gridHeight - 2);
+    Vector3 rot = new Vector3 (0, 0, 180);
+    foreach (RectPoint p in grid) {
+      PointType pt = Utils.getPointType (p, level.gridWidth, level.gridHeight);
+      if (pt == PointType.CENTER) {
+        count -= 1;
+        if (count == 0) {
+          grid [p].transform.DOPunchRotation (rot, 0.5f, 2, 1f).OnComplete (() => {
+            handleWinning ();
+          });
+        } else {
+          grid [p].transform.DOPunchRotation (rot, 0.5f, 2, 1f);
+        }
+      }
     }
   }
 
   private void handleWinning () {
-    GameObject.Find ("WinPanel").GetComponent<Canvas> ().enabled = true;
+    Canvas winPanel = GameObject.Find ("WinPanel").GetComponent<Canvas> ();
+    winPanel.enabled = true;
+    Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Button> ()
+      .GetComponentInChildren<Text> ();
     if (LevelUtils.isMaxLevel (level)) {
-      Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Text> ();
       nextLevel.text = "Max Level";
     } else {
+      nextLevel.text = "Next Level";
       LevelUtils.setLevel (level.id + 1);
     }
+    GameObject.Find ("StatusText").GetComponent<Text> ().text = "Good Job!";
+    GameObject.Find ("ScoreText").GetComponent<Text> ().text = string.Format (
+      "{0} moves\nin\n{1} seconds!\n", moveCount, timer.ToString ("0.00"));
+  }
+
+  private void handleLose () {
+    Canvas winPanel = GameObject.Find ("WinPanel").GetComponent<Canvas> ();
+    winPanel.enabled = true;
+    Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Button> ()
+      .GetComponentInChildren<Text> ();
+    nextLevel.text = "Try Again";
+    GameObject.Find ("StatusText").GetComponent<Text> ().text = "Failed :(";
+    GameObject.Find ("ScoreText").GetComponent<Text> ().text = "";
+    isPlaying = false;
   }
 
   private bool isWinning () {
