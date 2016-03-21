@@ -122,21 +122,21 @@ public static class LevelUtils {
     switch (mode) {
       case 0:
         // Easy
-        return 10f;
+        return 60f;
       case 1:
         // Normal
-        return 7f;
+        return 40f;
       case 2:
         // Hard
-        return 5f;
+        return 20f;
       case 3:
         // Very hard
-        return 2f;
+        return 10f;
       case 4:
         // insane
-        return 1f;
+        return 5f;
     }
-    return 30f;
+    return 40f;
   }
 
   public static string getModeString(int mode) {

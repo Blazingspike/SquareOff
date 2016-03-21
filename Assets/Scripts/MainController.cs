@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Gamelogic.Grids;
 using DG.Tweening;
 using UnityEngine.Advertisements;
+using Facebook.Unity;
 
 public class MainController : MonoBehaviour {
   public static MainController Instance;
@@ -33,6 +34,7 @@ public class MainController : MonoBehaviour {
 
   void Awake () {
     DOTween.Init ();
+    FB.Init ();
     initSinglton ();
   }
 
@@ -186,7 +188,6 @@ public class MainController : MonoBehaviour {
       Utils.moveRight (p, grid, map, level.gridWidth, level.gridHeight);
     }
     addOneMove ();
-    moveTimer = LevelUtils.getMoveTimer (currentMode);
     // Check if winning.
     isPlaying = !isWinning ();
     if (!isPlaying) {
@@ -210,6 +211,18 @@ public class MainController : MonoBehaviour {
         }
       }
     }
+  }
+
+  public void handleShareScore() {
+    FB.ShareLink(
+      null,
+      "Checkout my Awesome Rubic2D moves!",
+      string.Format (
+        "I finished Level {0} in {1} Mode with {2} moves in {3} seconds!",
+        level.id + 1, LevelUtils.getModeString(currentMode),
+        moveCount, timer.ToString ("0.00")),
+      null,
+      null);
   }
 
   private void handleWinning () {
