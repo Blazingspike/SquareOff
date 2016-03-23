@@ -215,7 +215,7 @@ public class MainController : MonoBehaviour {
 
   public void handleShareScore() {
     FB.ShareLink(
-      null,
+      new System.Uri("https://www.google.com"),
       "Checkout my Awesome Rubic2D moves!",
       string.Format (
         "I finished Level {0} in {1} Mode with {2} moves in {3} seconds!",
@@ -239,6 +239,7 @@ public class MainController : MonoBehaviour {
     GameObject.Find ("StatusText").GetComponent<Text> ().text = "Good Job!";
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = string.Format (
       "{0} moves\nin\n{1} seconds!\n", moveCount, timer.ToString ("0.00"));
+    GameObject.Find ("ShareBtn").SetActive(true);
   }
 
   private void handleLose () {
@@ -249,6 +250,7 @@ public class MainController : MonoBehaviour {
     nextLevel.text = "Try Again";
     GameObject.Find ("StatusText").GetComponent<Text> ().text = "Failed :(";
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = "";
+    GameObject.Find ("ShareBtn").SetActive(false);
     isPlaying = false;
   }
 

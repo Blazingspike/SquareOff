@@ -54,8 +54,9 @@ namespace UnityEditor.FacebookEditor
             if (!File.Exists(outputFile))
             {
                 var inputFile = Path.Combine(
-                    EditorApplication.applicationContentsPath,
-                    "PlaybackEngines/androidplayer/AndroidManifest.xml");
+                    //EditorApplication.applicationContentsPath,
+                    "/Applications/Unity",
+                    "PlaybackEngines/androidplayer/Apk/AndroidManifest.xml");
                 if (!File.Exists(inputFile))
                 {
                     // Unity moved this file. Try to get it at its new location
