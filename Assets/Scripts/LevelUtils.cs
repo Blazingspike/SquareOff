@@ -63,7 +63,10 @@ public static class LevelUtils {
     levels.Add (new Level (13, 6, 6, 1, 1, 0, 0));
     levels.Add (new Level (14, 6, 6, 1, 1, 1, 0));
     levels.Add (new Level (15, 6, 6, 1, 1, 1, 1));
-    levels.Add (new Level (15, 6, 6, 2, 1, 2, 1));
+    levels.Add (new Level (16, 6, 6, 2, 1, 2, 1));
+    levels.Add (new Level (17, 6, 6, 2, 2, 2, 2));
+    levels.Add (new Level (18, 6, 6, 3, 2, 3, 2));
+    levels.Add (new Level (19, 6, 6, 3, 3, 3, 3));
   }
 
   public static Level getLevel(int idx) {

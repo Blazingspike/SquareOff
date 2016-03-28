@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour {
 	}
 	
   public void onStartGame() {
-    SceneManager.LoadScene ("GamePlayScene");
+    //SceneManager.LoadScene ("GamePlayScene");
+    SceneManager.LoadScene("LevelScene");
   }
 
   public void onModeChangeClicked() {

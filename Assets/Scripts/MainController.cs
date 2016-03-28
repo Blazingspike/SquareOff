@@ -133,7 +133,7 @@ public class MainController : MonoBehaviour {
 
   public void backHome () {
     resetCounter ();
-    SceneManager.LoadScene ("HomeScene");
+    SceneManager.LoadScene ("LevelScene");
   }
 
   private IEnumerator shuffleGrid () {

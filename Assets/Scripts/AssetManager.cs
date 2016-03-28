@@ -22,7 +22,11 @@ public class AssetManager : MonoBehaviour {
   public SquareSprite edgeSquare;
 
   public SquareCell squarePrefab;
+  public LevelCell levelPrefab;
   public GameObject[] markerPrefab;
+
+  public Sprite playableLevelSprite;
+  public Sprite nonplayableLevelSprite;
 
   // Use this for initialization
   void Awake () {
