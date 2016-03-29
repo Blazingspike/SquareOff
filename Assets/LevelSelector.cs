@@ -3,6 +3,7 @@ using System.Collections;
 using Gamelogic.Grids;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Advertisements;
 
 public class LevelSelector : MonoBehaviour {
 
@@ -37,6 +38,9 @@ public class LevelSelector : MonoBehaviour {
   void handleLevelClicked (LevelCell cell) {
     if (cell.IsPlayable) {
       LevelUtils.setCurrentLevel (cell.Level - 1);
+      if (LevelUtils.showAds () && Advertisement.IsReady ()) {
+        Advertisement.Show ();
+      }
       SceneManager.LoadScene ("GamePlayScene");
     } else {
       showMessage (

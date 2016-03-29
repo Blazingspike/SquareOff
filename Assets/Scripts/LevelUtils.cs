@@ -44,6 +44,8 @@ public static class LevelUtils {
   public static string CurrentLevelPrefix = "rubic2d-current-level-";
   public static string MaxLevelPrefix = "rubic2d-max-level-";
 
+  public static string AdsCounter = "rubic2d-ads-counter";
+
   private static void initLevels () {
     if (levels != null) {
       return;
@@ -199,5 +201,14 @@ public static class LevelUtils {
         return "10 sec a game!";
     }
     return "Free game";
+  }
+
+  public static bool showAds() {
+    int counter = 0;
+    if (PlayerPrefs.HasKey (AdsCounter)) {
+      counter = PlayerPrefs.GetInt (AdsCounter);
+    }
+    PlayerPrefs.SetInt (AdsCounter, counter + 1);
+    return counter % 4 == 3;
   }
 }

@@ -33,8 +33,6 @@ public class MainController : MonoBehaviour {
   }
 
   void Awake () {
-    DOTween.Init ();
-    FB.Init ();
     initSinglton ();
   }
 
@@ -124,8 +122,7 @@ public class MainController : MonoBehaviour {
   }
 
   public void nextLevelHandler () {
-    if (Advertisement.IsReady ()) {
-      Debug.Log (Advertisement.gameId);
+    if (LevelUtils.showAds() && Advertisement.IsReady ()) {
       Advertisement.Show ();
     }
     resetLevel ();
