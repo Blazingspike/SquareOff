@@ -9,15 +9,15 @@ public class Level {
   public int[] numMarked;
   public string description;
 
-  public Level() {
+  public Level () {
     id = 0;
     gridWidth = 4;
     gridHeight = 4;
     description = "Align the picked color to the cube";
   }
 
-  public Level(int id, int gridWidth, int gridHeight,
-    int mark1, int mark2, int mark3, int mark4) {
+  public Level (int id, int gridWidth, int gridHeight,
+                int mark1, int mark2, int mark3, int mark4) {
     this.id = id;
     this.gridWidth = gridWidth;
     this.gridHeight = gridHeight;
@@ -36,13 +36,15 @@ public class Level {
 
 public static class LevelUtils {
   private static List<Level> levels;
-  public static string LevelString = "rubic2d-level";
-  public static string MaxLevelString = "rubic2d-max-level";
-  // 0 - easy; 1 - standard; 2 - hard; 3 - very hard; 4 - insane
+
+  // 0 - easy; 1 - standard; 2 - hard; 3 - insane
   public static string ModeString = "rubic2d-mode";
   public static string MaxModeString = "rubic2d-max-mode";
 
-  private static void initLevels() {
+  public static string CurrentLevelPrefix = "rubic2d-current-level-";
+  public static string MaxLevelPrefix = "rubic2d-max-level-";
+
+  private static void initLevels () {
     if (levels != null) {
       return;
     }
@@ -69,80 +71,101 @@ public static class LevelUtils {
     levels.Add (new Level (19, 6, 6, 3, 3, 3, 3));
   }
 
-  public static Level getLevel(int idx) {
+  public static Level getLevel (int idx) {
     if (levels == null) {
       initLevels ();
     }
     if (idx >= levels.Count) {
-      return levels[levels.Count - 1];
+      return levels [levels.Count - 1];
     }
     return levels [idx];
   }
 
-  public static Level getCurrentLevel() {
-    if (PlayerPrefs.HasKey (LevelString)) {
-      return getLevel(PlayerPrefs.GetInt (LevelString));
-    }
-    setLevel (0);
-    return getLevel(0);
-  }
-
-  public static void setLevel(int idx) {
-    initLevels ();
-    PlayerPrefs.SetInt (LevelString, Mathf.Min (idx, levels.Count));
-  }
-
-  public static bool isMaxLevel(Level level) {
+  public static bool isMaxLevel (Level level) {
     initLevels ();
     return level.id >= levels.Count;
   }
 
-  public static int getCurrentMode() {
+  public static int getCurrentMode () {
     if (PlayerPrefs.HasKey (ModeString)) {
       return PlayerPrefs.GetInt (ModeString);
     }
     return 0;
   }
 
-  public static int getMaxMode() {
+  public static void setMaxMode(int mode) {
+    PlayerPrefs.SetInt (MaxModeString, mode);
+  }
+
+  public static int getMaxMode () {
     if (!PlayerPrefs.HasKey (MaxModeString)) {
       // Default set to normal.
-      PlayerPrefs.SetInt (MaxModeString, 1);
+      PlayerPrefs.SetInt (MaxModeString, 0);
     }
     return PlayerPrefs.GetInt (MaxModeString);
   }
 
-  public static void setCurrentMode(int m) {
+  public static Level getCurrentLevel () {
+    int mode = getCurrentMode ();
+    string currentLevelStr = CurrentLevelPrefix + mode.ToString ();
+    if (PlayerPrefs.HasKey (currentLevelStr)) {
+      return getLevel (PlayerPrefs.GetInt (currentLevelStr));
+    }
+    setCurrentLevel (0);
+    return getLevel (0);
+  }
+
+  public static void setCurrentLevel (int idx) {
+    initLevels ();
+    int mode = getCurrentMode ();
+    string s = CurrentLevelPrefix + mode.ToString ();
+    PlayerPrefs.SetInt (s, Mathf.Min (idx, levels.Count));
+  }
+
+  public static void setMaxLevel (int mode, int idx) {
+    initLevels ();
+    string s = MaxLevelPrefix + mode.ToString ();
+    PlayerPrefs.SetInt (s, Mathf.Min (idx, levels.Count));
+  }
+
+  public static int getMaxLevelId () {
+    int mode = getCurrentMode ();
+    string levelStr = MaxLevelPrefix + mode.ToString ();
+    if (PlayerPrefs.HasKey (levelStr)) {
+      return PlayerPrefs.GetInt (levelStr);
+    }
+    setMaxLevel (mode, 0);
+    return 0;
+  }
+
+  public static void setCurrentMode (int m) {
     PlayerPrefs.SetInt (ModeString, m);
   }
 
-  public static float getCurrentMoveTimer() {
+  public static float getCurrentMoveTimer () {
     int mode = getCurrentMode ();
     return getMoveTimer (mode);
   }
 
-  public static float getMoveTimer(int mode) {
+  public static float getMoveTimer (int mode) {
     switch (mode) {
       case 0:
         // Easy
-        return 60f;
+        return 120f;
       case 1:
         // Normal
-        return 40f;
+        return 60f;
       case 2:
         // Hard
-        return 20f;
+        return 30f;
       case 3:
-        // Very hard
+        // Insane
         return 10f;
-      case 4:
-        // insane
-        return 5f;
     }
     return 40f;
   }
 
-  public static string getModeString(int mode) {
+  public static string getModeString (int mode) {
     switch (mode) {
       case 0:
         // Easy
@@ -154,12 +177,27 @@ public static class LevelUtils {
         // Hard
         return "Hard";
       case 3:
-        // Very hard
-        return "Very Hard";
-      case 4:
         // insane
         return "Insane";
     }
     return "Mode";
+  }
+
+  public static string getModeInfo (int mode) {
+    switch (mode) {
+      case 0:
+        // Easy
+        return "2 mins a game";
+      case 1:
+        // Normal
+        return "1 min a game";
+      case 2:
+        // Hard
+        return "30 sec a game";
+      case 3:
+        // insane
+        return "10 sec a game!";
+    }
+    return "Free game";
   }
 }

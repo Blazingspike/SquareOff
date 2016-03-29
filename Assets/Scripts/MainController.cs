@@ -230,13 +230,24 @@ public class MainController : MonoBehaviour {
     winPanel.enabled = true;
     Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Button> ()
       .GetComponentInChildren<Text> ();
+    string txt = "Good Job!";
     if (LevelUtils.isMaxLevel (level)) {
       nextLevel.text = "Max Level";
+      if (currentMode == 3) {
+        txt = "You are the true master! Please wait for next version :)";
+      } else {
+        LevelUtils.setMaxMode (currentMode + 1);
+        txt = LevelUtils.getModeString(currentMode + 1) + " unlocked!";
+      }
     } else {
       nextLevel.text = "Next Level";
-      LevelUtils.setLevel (level.id + 1);
+      int nextLvl = level.id + 1;
+      LevelUtils.setCurrentLevel (level.id + 1);
+      if (nextLvl > LevelUtils.getMaxLevelId ()) {
+        LevelUtils.setMaxLevel (currentMode, nextLvl);
+      }
     }
-    GameObject.Find ("StatusText").GetComponent<Text> ().text = "Good Job!";
+    GameObject.Find ("StatusText").GetComponent<Text> ().text = txt;
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = string.Format (
       "{0} moves\nin\n{1} seconds!\n", moveCount, timer.ToString ("0.00"));
     GameObject.Find ("ShareBtn").SetActive(true);
@@ -293,7 +304,7 @@ public class MainController : MonoBehaviour {
     // Creates a grid in a rectangular shape.
     grid = RectGrid<SquareCell>.Rectangle (level.gridWidth, level.gridHeight);
     // Creates a map...
-    map = new RectMap (AssetManager.Instance.squarePrefab.Dimensions)
+    map = new RectMap (AssetManager.Instance.squarePrefab.Dimensions * 1.1f)
       .WithWindow (Utils.ScreenRect)
       .AlignMiddleCenter (grid);
 
