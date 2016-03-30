@@ -85,7 +85,7 @@ public static class LevelUtils {
 
   public static bool isMaxLevel (Level level) {
     initLevels ();
-    return level.id >= levels.Count;
+    return level.id >= levels.Count - 1;
   }
 
   public static int getCurrentMode () {

@@ -27,7 +27,6 @@ public class AssetManager : MonoBehaviour {
 
   public Sprite playableLevelSprite;
   public Sprite nonplayableLevelSprite;
-
   // Use this for initialization
   void Awake () {
     Instance = this;

@@ -24,6 +24,7 @@ public class MainController : MonoBehaviour {
   bool isPlaying;
   int pickedColor;
   int currentMode;
+  AudioSource audioSource;
 
   void initSinglton () {
     if (Instance == null) {
@@ -38,7 +39,7 @@ public class MainController : MonoBehaviour {
 
   // Use this for initialization
   void Start () {
-    //LevelUtils.setLevel (0);
+    audioSource = this.GetComponent<AudioSource> ();
     resetLevel ();
   }
 	
@@ -60,6 +61,13 @@ public class MainController : MonoBehaviour {
       }
       handlePointClicked (point);
     }
+  }
+
+  private void playSquareClicked() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.Play ();
   }
 
   private void updateTimer () {
@@ -168,6 +176,7 @@ public class MainController : MonoBehaviour {
   }
 
   private void handlePointClicked (RectPoint p) {
+    playSquareClicked ();
     PointType type = Utils.getPointType (p, level.gridWidth, level.gridHeight);
     if (type == PointType.NO_OP || type == PointType.CENTER) {
       return;
@@ -212,7 +221,7 @@ public class MainController : MonoBehaviour {
 
   public void handleShareScore() {
     FB.ShareLink(
-      new System.Uri("https://www.google.com"),
+      new System.Uri("https://www.fastfishgame.com/rubic2d"),
       "Checkout my Awesome Rubic2D moves!",
       string.Format (
         "I finished Level {0} in {1} Mode with {2} moves in {3} seconds!",
@@ -231,7 +240,7 @@ public class MainController : MonoBehaviour {
     if (LevelUtils.isMaxLevel (level)) {
       nextLevel.text = "Max Level";
       if (currentMode == 3) {
-        txt = "You are the true master! Please wait for next version :)";
+        txt = "You are the true master!";
       } else {
         LevelUtils.setMaxMode (currentMode + 1);
         txt = LevelUtils.getModeString(currentMode + 1) + " unlocked!";
@@ -243,6 +252,7 @@ public class MainController : MonoBehaviour {
       if (nextLvl > LevelUtils.getMaxLevelId ()) {
         LevelUtils.setMaxLevel (currentMode, nextLvl);
       }
+      LevelUtils.setMaxLevel (currentMode, 19);
     }
     GameObject.Find ("StatusText").GetComponent<Text> ().text = txt;
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = string.Format (
@@ -258,7 +268,10 @@ public class MainController : MonoBehaviour {
     nextLevel.text = "Try Again";
     GameObject.Find ("StatusText").GetComponent<Text> ().text = "Failed :(";
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = "";
-    GameObject.Find ("ShareBtn").SetActive(false);
+    GameObject shareBtn = GameObject.Find ("ShareBtn");
+    if (shareBtn) {
+      shareBtn.SetActive (false);
+    }
     isPlaying = false;
   }
 
@@ -301,7 +314,7 @@ public class MainController : MonoBehaviour {
     // Creates a grid in a rectangular shape.
     grid = RectGrid<SquareCell>.Rectangle (level.gridWidth, level.gridHeight);
     // Creates a map...
-    map = new RectMap (AssetManager.Instance.squarePrefab.Dimensions * 1.1f)
+    map = new RectMap (AssetManager.Instance.squarePrefab.Dimensions * 1.05f)
       .WithWindow (Utils.ScreenRect)
       .AlignMiddleCenter (grid);
 

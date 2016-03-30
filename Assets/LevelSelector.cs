@@ -22,7 +22,7 @@ public class LevelSelector : MonoBehaviour {
   }
 
   void Update () {
-    if (modeChanger.enabled) {
+    if (modeChanger != null && modeChanger.enabled) {
       return;
     }
     if (Input.GetMouseButtonDown (0)) {
