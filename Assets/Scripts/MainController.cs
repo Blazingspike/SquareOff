@@ -252,7 +252,6 @@ public class MainController : MonoBehaviour {
       if (nextLvl > LevelUtils.getMaxLevelId ()) {
         LevelUtils.setMaxLevel (currentMode, nextLvl);
       }
-      LevelUtils.setMaxLevel (currentMode, 19);
     }
     GameObject.Find ("StatusText").GetComponent<Text> ().text = txt;
     GameObject.Find ("ScoreText").GetComponent<Text> ().text = string.Format (
