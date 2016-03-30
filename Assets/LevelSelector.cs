@@ -12,6 +12,8 @@ public class LevelSelector : MonoBehaviour {
   private IMap<RectPoint> map;
 
   private Canvas modeChanger;
+
+  private AudioSource audioSource;
   // Use this for initialization
   void Start () {
     modeChanger = GameObject.Find ("ModeChanger").GetComponent<Canvas> ();
@@ -35,7 +37,15 @@ public class LevelSelector : MonoBehaviour {
     }
   }
 
+  private void playBtnClicked() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.PlayOneShot(AssetManager.Instance.btnClick);
+  }
+
   void handleLevelClicked (LevelCell cell) {
+    playBtnClicked ();
     if (cell.IsPlayable) {
       LevelUtils.setCurrentLevel (cell.Level - 1);
       if (LevelUtils.showAds () && Advertisement.IsReady ()) {
@@ -119,18 +129,22 @@ public class LevelSelector : MonoBehaviour {
   }
 
   public void onEasyClicked () {
+    playBtnClicked ();
     setMode (0);
   }
 
   public void onNormalClicked () {
+    playBtnClicked ();
     setMode (1);
   }
 
   public void onHardClicked () {
+    playBtnClicked ();
     setMode (2);
   }
 
   public void onInsaneClicked () {
+    playBtnClicked ();
     setMode (3);
   }
 

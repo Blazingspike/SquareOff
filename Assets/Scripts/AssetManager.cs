@@ -27,6 +27,12 @@ public class AssetManager : MonoBehaviour {
 
   public Sprite playableLevelSprite;
   public Sprite nonplayableLevelSprite;
+
+  public AudioClip btnClick;
+  public AudioClip cubeClick;
+  public AudioClip cubeWrongClick;
+  public AudioClip winSound;
+  public AudioClip failedSound;
   // Use this for initialization
   void Awake () {
     Instance = this;

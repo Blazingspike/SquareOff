@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour {
 
   public void onStartGame() {
     //SceneManager.LoadScene ("GamePlayScene");
+    AudioSource s = this.GetComponent<AudioSource>();
+    s.PlayOneShot (AssetManager.Instance.btnClick);
     SceneManager.LoadScene("LevelScene");
   }
 }

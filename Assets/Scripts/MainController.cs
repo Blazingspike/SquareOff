@@ -67,7 +67,35 @@ public class MainController : MonoBehaviour {
     if (audioSource == null) {
       audioSource = this.GetComponent<AudioSource> ();
     }
-    audioSource.Play ();
+    audioSource.PlayOneShot(AssetManager.Instance.cubeClick);
+  }
+
+  private void playBtnClicked() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.PlayOneShot(AssetManager.Instance.btnClick);
+  }
+
+  private void playSquareWrongClicked() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.PlayOneShot(AssetManager.Instance.cubeWrongClick);
+  }
+
+  private void playWin() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.PlayOneShot(AssetManager.Instance.winSound);
+  }
+
+  private void playFailed() {
+    if (audioSource == null) {
+      audioSource = this.GetComponent<AudioSource> ();
+    }
+    audioSource.PlayOneShot(AssetManager.Instance.failedSound);
   }
 
   private void updateTimer () {
@@ -130,6 +158,7 @@ public class MainController : MonoBehaviour {
   }
 
   public void nextLevelHandler () {
+    playBtnClicked ();
     if (LevelUtils.showAds() && Advertisement.IsReady ()) {
       Advertisement.Show ();
     }
@@ -137,6 +166,7 @@ public class MainController : MonoBehaviour {
   }
 
   public void backHome () {
+    playBtnClicked ();
     resetCounter ();
     SceneManager.LoadScene ("LevelScene");
   }
@@ -170,17 +200,19 @@ public class MainController : MonoBehaviour {
           break;
       }
       count += 1;
+      playSquareClicked ();
       yield return new WaitForSeconds (0.12f);
     }
     isPlaying = true;
   }
 
   private void handlePointClicked (RectPoint p) {
-    playSquareClicked ();
     PointType type = Utils.getPointType (p, level.gridWidth, level.gridHeight);
     if (type == PointType.NO_OP || type == PointType.CENTER) {
+      playSquareWrongClicked ();
       return;
     }
+    playSquareClicked ();
     if (type == PointType.MOVE_UP) {
       Utils.moveUp (p, grid, map, level.gridWidth, level.gridHeight);
     }
@@ -220,6 +252,7 @@ public class MainController : MonoBehaviour {
   }
 
   public void handleShareScore() {
+    playBtnClicked ();
     FB.ShareLink(
       new System.Uri("https://www.fastfishgame.com/rubic2d"),
       "Checkout my Awesome Rubic2D moves!",
@@ -232,6 +265,7 @@ public class MainController : MonoBehaviour {
   }
 
   private void handleWinning () {
+    playWin ();
     Canvas winPanel = GameObject.Find ("WinPanel").GetComponent<Canvas> ();
     winPanel.enabled = true;
     Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Button> ()
@@ -260,6 +294,7 @@ public class MainController : MonoBehaviour {
   }
 
   private void handleLose () {
+    playFailed ();
     Canvas winPanel = GameObject.Find ("WinPanel").GetComponent<Canvas> ();
     winPanel.enabled = true;
     Text nextLevel = GameObject.Find ("NextLevel").GetComponent<Button> ()
