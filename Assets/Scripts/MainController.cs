@@ -51,6 +51,7 @@ public class MainController : MonoBehaviour {
       updateTimer ();
     }
     if (moveTimer < 0) {
+      moveTimer = 0;
       handleLose ();
     }
     if (isPlaying && Input.GetMouseButtonDown (0)) {
